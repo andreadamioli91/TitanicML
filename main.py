@@ -1,26 +1,36 @@
 from loader.csvloader import CsvLoader
 from loader.datavisualizer import DataVisualizer
-from dataclean.datacleaner import DataCleaner
-
+from sklearn.pipeline import Pipeline
+from transformer.fillna import FillNa
+from transformer.uselessdrop import UselessDrop
+from transformer.transformComplex import TransformComplex
+from transformer.dummies import Dummies
+from transformer.typeconverter import TypeConverter
+from transformer.lowcorrelateddrop import DropLowCorrelated
 
 TRAIN_DATASET = "data/train.csv"
 TEST_DATASET = "data/test.csv"
 
 loader = CsvLoader()
-data_cleaner = DataCleaner()
 data_visualizer = DataVisualizer()
 
 # Press the green button in the gutter to run the script.
 if __name__ == "__main__":
+    pipeline = Pipeline([
+        ("fillNa", FillNa()),
+        ("uselessDrop", UselessDrop()),
+        ("transformComplex", TransformComplex()),
+        ("dummies", Dummies()),
+        ("typeConvert", TypeConverter()),
+        ("dropLowCorrelated", DropLowCorrelated())
+    ])
+
     df = loader.load_data(TRAIN_DATASET)
-    df = data_cleaner.drop_useless(df)
-    df = data_cleaner.transform_complex_columns(df)
-    df = data_cleaner.convert_dummies(df)
-    df = data_cleaner.fill_na(df)
-    df = data_cleaner.manage_formats(df)
-    df = data_cleaner.drop_low_correlated(df)
+
+    X_transformed = pipeline.fit_transform(df)
+
     # data_visualizer.show_correlation_heatmap(df, "Survived")
-    # data_visualizer.print_dataframe(df, 5, None)
+    data_visualizer.print_dataframe(X_transformed, 5, None)
     print("End of the script")
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
