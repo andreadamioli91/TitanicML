@@ -12,12 +12,14 @@ data_visualizer = DataVisualizer()
 
 # Press the green button in the gutter to run the script.
 if __name__ == "__main__":
-    dataset = loader.load_data(TRAIN_DATASET)
-    dataset = data_cleaner.drop_useless(dataset)
-    dataset = data_cleaner.transform_complex_columns(dataset)
-    dataset = data_cleaner.convert_dummies(dataset)
-    dataset = data_cleaner.fill_na(dataset)
-    data_visualizer.print_dataframe(dataset, 5, None)
+    df = loader.load_data(TRAIN_DATASET)
+    df = data_cleaner.drop_useless(df)
+    df = data_cleaner.transform_complex_columns(df)
+    df = data_cleaner.convert_dummies(df)
+    df = data_cleaner.fill_na(df)
+    df = data_cleaner.manage_formats(df)
+    data_visualizer.show_correlation_heatmap(df, "Survived")
+    # data_visualizer.print_dataframe(dataset, 5, None)
     print("End of the script")
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

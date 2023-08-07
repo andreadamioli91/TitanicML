@@ -20,6 +20,7 @@ class DataCleaner:
     def convert_dummies(self, df):
         df = pd.get_dummies(df, columns=['Sex'], drop_first=True)
         df = pd.get_dummies(df, columns=['Pclass'], drop_first=True)
+        df = pd.get_dummies(df, columns=['Cabin_Type'], drop_first=True)
         return df
 
     def transform_complex_columns(self, df):
@@ -42,4 +43,11 @@ class DataCleaner:
         df['Last_Cypher_Is_Even'] = df['Ticket'].apply(
             lambda x: int(str(x)[-1]) % 2 == 0 if isinstance(x, str) and x.isdigit() else None)
         df.drop(['Ticket'], axis=1, inplace=True)
+        return df
+
+    def manage_formats(self, df):
+        # Fill NaN values with a default value (e.g., -1)
+        df.fillna(-1, inplace=True)
+
+        df = df.astype(int)
         return df
