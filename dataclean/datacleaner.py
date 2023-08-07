@@ -1,19 +1,27 @@
 import pandas as pd
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer
 
 
 class DataCleaner:
 
     def fill_na(self, df):
         numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
-        for column in numeric_columns:
-            df[column].fillna(df[column].mean(), inplace=True)
-        return df
+        imputer = IterativeImputer(max_iter=10, random_state=0)
+        # Fit the imputer on the DataFrame and transform it to fill the missing values
+        filled_data = imputer.fit_transform(df)
+        # Convert the filled data back to a DataFrame with the original columns
+        filled_df = pd.DataFrame(filled_data, columns=df.columns)
+        return filled_df
 
     def drop_useless(self, df):
+        df.drop(['Embarked', 'Name'], axis=1, inplace=True)
+        return df
+
+    def drop_low_correlated(self, df):
         numeric_columns = df.select_dtypes(include=['int64', 'float64']).columns
         correlations = df[numeric_columns].corr()['Survived'].drop('Survived')
         columns_to_drop = correlations[abs(correlations) < 0.05].index
-        df.drop(['Embarked', 'Name'], axis=1, inplace=True)
         df.drop(columns_to_drop, axis=1, inplace=True)
         return df
 

@@ -18,8 +18,9 @@ if __name__ == "__main__":
     df = data_cleaner.convert_dummies(df)
     df = data_cleaner.fill_na(df)
     df = data_cleaner.manage_formats(df)
-    data_visualizer.show_correlation_heatmap(df, "Survived")
-    # data_visualizer.print_dataframe(dataset, 5, None)
+    df = data_cleaner.drop_low_correlated(df)
+    # data_visualizer.show_correlation_heatmap(df, "Survived")
+    # data_visualizer.print_dataframe(df, 5, None)
     print("End of the script")
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
