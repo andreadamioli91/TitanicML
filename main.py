@@ -6,6 +6,7 @@ from sklearn.pipeline import Pipeline
 
 from model.randomforest.randomforest import RandomForestCVTrainer
 from model.randomforest.randomforestexecution import RandomForestExecution
+from model.xgboost.xgboostexecution import XGBoostExecution
 from transformer.fillna import FillNa
 from transformer.uselessdrop import UselessDrop
 from transformer.transformComplex import TransformComplex
@@ -25,7 +26,8 @@ data_visualizer = DataVisualizer()
 low_correlated = FindLowCorrelated()
 utils = Utils()
 
-randomForest = RandomForestExecution()
+random_forest = RandomForestExecution()
+xgb = XGBoostExecution()
 
 
 # Press the green button in the gutter to run the script.
@@ -62,12 +64,15 @@ if __name__ == "__main__":
     # data_visualizer.show_correlation_heatmap(data_transformed, "Survived")
     # data_visualizer.print_dataframe(data_transformed, 5, None)
 
-    rf_predictions = randomForest.fit_and_predict(train_scaled, train_y, test_scaled)
+    rf_predictions = random_forest.fit_and_predict(train_scaled, train_y, test_scaled)
+    xgb_predictions = xgb.fit_and_predict(train_scaled, train_y, test_scaled)
 
     rf_predictions_solution = pd.DataFrame({"PassengerId": test_initial["PassengerId"], "Survived": rf_predictions})
+    xgb_predictions_solution = pd.DataFrame({"PassengerId": test_initial["PassengerId"], "Survived": xgb_predictions})
 
     # data_visualizer.print_dataframe(predictions_df, 5, None)
 
     rf_predictions_solution.to_csv('data/rf_solution.csv', index=False)
+    xgb_predictions_solution.to_csv('data/xg_solution.csv', index=False)
 
 print("End of the script")
