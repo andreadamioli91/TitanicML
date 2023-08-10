@@ -4,6 +4,7 @@ from loader.csvloader import CsvLoader
 from loader.datavisualizer import DataVisualizer
 from sklearn.pipeline import Pipeline
 
+from model.logisticregression.logisticregressionexecution import LogisticRegressionExecution
 from model.randomforest.randomforest import RandomForestCVTrainer
 from model.randomforest.randomforestexecution import RandomForestExecution
 from model.xgboost.xgboostexecution import XGBoostExecution
@@ -28,6 +29,7 @@ utils = Utils()
 
 random_forest = RandomForestExecution()
 xgb = XGBoostExecution()
+lr = LogisticRegressionExecution()
 
 
 # Press the green button in the gutter to run the script.
@@ -66,13 +68,16 @@ if __name__ == "__main__":
 
     rf_predictions = random_forest.fit_and_predict(train_scaled, train_y, test_scaled)
     xgb_predictions = xgb.fit_and_predict(train_scaled, train_y, test_scaled)
+    lr_predictions = lr.fit_and_predict(train_scaled, train_y, test_scaled)
 
     rf_predictions_solution = pd.DataFrame({"PassengerId": test_initial["PassengerId"], "Survived": rf_predictions})
     xgb_predictions_solution = pd.DataFrame({"PassengerId": test_initial["PassengerId"], "Survived": xgb_predictions})
+    lr_predictions_solution = pd.DataFrame({"PassengerId": test_initial["PassengerId"], "Survived": lr_predictions})
 
     # data_visualizer.print_dataframe(predictions_df, 5, None)
 
     rf_predictions_solution.to_csv('data/rf_solution.csv', index=False)
     xgb_predictions_solution.to_csv('data/xg_solution.csv', index=False)
+    lr_predictions_solution.to_csv('data/lr_solution.csv', index=False)
 
 print("End of the script")
