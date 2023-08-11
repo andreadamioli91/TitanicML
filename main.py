@@ -9,6 +9,7 @@ from model.logisticregression.logisticregressionexecution import LogisticRegress
 from model.randomforest.randomforest import RandomForestCVTrainer
 from model.randomforest.randomforestexecution import RandomForestExecution
 from model.xgboost.xgboostexecution import XGBoostExecution
+from transformer.labelencoder import ManageLabelEncoding
 from transformer.fillna import FillNa
 from transformer.logtransformation import LogTransformation
 from transformer.uselessdrop import UselessDrop
@@ -34,21 +35,22 @@ xgb = XGBoostExecution()
 lr = LogisticRegressionExecution()
 nn = NeuralNetworkExecution()
 
-
 # Press the green button in the gutter to run the script.
 if __name__ == "__main__":
     train_initial = loader.load_data(TRAIN_DATASET)
     test_initial = loader.load_data(TEST_DATASET)
     low_correlated_columns = low_correlated.get_low_correlated_cols(train_initial, MIN_CORRELATION)
-    know_useless_columns = ["Embarked", "Name"]
+    known_useless_columns = ["Name"]
+    known_encodable_columns = ["Embarked"]
 
     transformer_pipeline = Pipeline([
         ("fillNa", FillNa()),
-        ("dropUseless", UselessDrop(know_useless_columns)),
+        ("dropUseless", UselessDrop(known_useless_columns)),
         ("dropUncorrelated", UselessDrop(low_correlated_columns)),
         ("transformComplex", TransformComplex()),
         ("logTransformation", LogTransformation()),
         ("dummies", Dummies()),
+        ("labelEncoder", ManageLabelEncoding(known_encodable_columns)),
         ("typeConvert", TypeConverter()),
     ])
 
